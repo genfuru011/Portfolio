@@ -47,3 +47,5 @@
 ## 決定・ログ（随時追記）
 - 2025-11-03: リポジトリ現状レビューとノート初版作成。
 - 2025-11-03: 未使用依存 `unocss`, `@unocss/cli` を `package.json` から削除。
+- 2025-11-03: 未使用 `vite-ssr-components`, `@tailwindcss/vite` を削除。`vite.config.ts` からプラグイン除去。
+- 2025-11-03: `pnpm-lock.yaml` を削除（パッケージマネージャは npm を前提）。

@@ -6,6 +6,11 @@
 
 - 削除（依存）
   - 未使用の UnoCSS 関連依存を削除: `unocss`, `@unocss/cli`。
+- 削除（依存/設定）
+  - 未使用の `vite-ssr-components` と `@tailwindcss/vite` を削除。
+  - `vite.config.ts` から当該プラグイン呼び出しを削除。
+- 削除（ロックファイル）
+  - `pnpm-lock.yaml` を削除（npm へ統一）。
 - ドキュメント
   - README を現行構成（ローカルCSS/ASSETS、Wrangler dev ポート）に更新。
   - アーキテクチャノートを ASSETS 配信前提の図と記述へ更新。
