@@ -4,7 +4,8 @@ A clean and modern portfolio website built with [Hono](https://hono.dev/) and Ta
 
 ##  Live Demo
 
-Visit the live site: [https://portfolio-hono.hiro-genfuru0119.workers.dev](https://portfolio-hono.hiro-genfuru0119.workers.dev)
+Deployed URL is issued by Cloudflare Workers when you run `wrangler deploy`.
+Example: `https://portfolio-hono.<your-account>.workers.dev`
 
 ##  Features
 
@@ -13,8 +14,8 @@ Visit the live site: [https://portfolio-hono.hiro-genfuru0119.workers.dev](https
 -  Built with Hono for fast performance
 -  Deployed on Cloudflare Workers
 -  TypeScript support
--  Tailwind CSS (CDN) for styling
--  GitHub-hosted images for reliable asset delivery
+-  Tailwind CSS v4 built locally and served via Workers assets
+-  Static assets served from `public/` via Wrangler `[assets]`
 
 ## Tech Stack
 
@@ -49,7 +50,7 @@ npm install
 npm run dev
 ```
 
-4. Open your browser and visit `http://localhost:5173`
+4. Open your browser and visit `http://localhost:8787` (default for Wrangler dev)
 
 ## Development
 
@@ -107,9 +108,10 @@ The design uses Tailwind CSS. Customize the appearance by:
 
 ### Profile Image
 
-The profile image is currently hosted on GitHub. To update:
-1. Replace `public/images/profile.jpg` in your repository
-2. Update the GitHub raw URL in `src/index.tsx` if needed
+Profile images are served locally from `public/images/` via Workers assets.
+To update:
+1. Replace `public/images/profile.jpg` (or add new files under `public/images/`)
+2. Update the image path in `src/index.tsx` if you change filenames
 
 ## Contributing
 
