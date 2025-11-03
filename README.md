@@ -1,126 +1,73 @@
-# Portfolio Website
+# Portfolio Website (FastAPI + Vue SPA)
 
-A clean and modern portfolio website built with [Hono](https://hono.dev/) and Tailwind CSS, designed to showcase professional experience and education in a minimalist style.
-
-##  Live Demo
-
-Deployed URL is issued by Cloudflare Workers when you run `wrangler deploy`.
-Example: `https://portfolio-hono.<your-account>.workers.dev`
-
-##  Features
-
--  Clean, minimalist design inspired by modern portfolio layouts
--  Fully responsive design
--  Built with Hono for fast performance
--  Deployed on Cloudflare Workers
--  TypeScript support
--  Tailwind CSS v4 built locally and served via Workers assets
--  Static assets served from `public/` via Wrangler `[assets]`
+本プロジェクトは FastAPI(Backend) と Vue 3 + Vite(Frontend, SPA) で構成されたポートフォリオサイトです。従来の Hono(Cloudflare Workers, SSR) 構成から移行済みです。
 
 ## Tech Stack
 
-- **Framework**: Hono (Web framework for Cloudflare Workers)
-- **Styling**: Tailwind CSS
-- **Language**: TypeScript
-- **Deployment**: Cloudflare Workers
-- **Build Tool**: Vite
+- Backend: FastAPI, Uvicorn
+- Frontend: Vue 3, Vite, CSS Modules + PostCSS
+- Language: Python 3.10+, JavaScript (ESM)
 
-## Getting Started
+## Project Structure
 
-### Prerequisites
-
-- Node.js (v18 or higher)
-- npm
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone <your-repo-url>
-cd Portfolio-hono
 ```
-
-2. Install dependencies:
-```bash
-npm install
+Portfolio/
+├── backend/
+│   ├── app/main.py            # FastAPI エントリ（/health, /api/hello）
+│   └── pyproject.toml         # 依存（uv 管理）
+├── frontend/
+│   ├── src/App.vue            # メインUI（SPA）
+│   ├── src/components/HeroSection.vue
+│   ├── src/components/EducationSection.vue
+│   ├── src/components/ExperienceSection.vue
+│   ├── vitest.config.ts       # フロントテスト設定
+│   └── package.json
+└── public/
+    ├── favicon.ico
+    └── images/
+        ├── profile.jpg
+        └── layerx.png
 ```
-
-3. Start the development server:
-```bash
-npm run dev
-```
-
-4. Open your browser and visit `http://localhost:8787` (default for Wrangler dev)
 
 ## Development
 
-### Available Scripts
+- Backend
+  - 前提: Python 3.10+, uv
+  - 起動: `cd backend && uv sync && uv run uvicorn app.main:app --reload --port 8000`
+  - Docs: `http://127.0.0.1:8000/docs`
+- Frontend
+  - 前提: Node.js 18+
+  - 起動: `cd frontend && npm i && npm run dev`
+  - ブラウザ: `http://127.0.0.1:5173`
+  - 開発中は `/api` が `http://127.0.0.1:8000` にプロキシされます
 
-- `npm run dev` - Start development server with Wrangler
-- `npm run build` - Build for production (dry run)
-- `npm run preview` - Preview with Wrangler local mode
-- `npm run deploy` - Deploy to Cloudflare Workers
-- `npm run cf-typegen` - Generate Cloudflare types
-
-### Project Structure
+## Frontend Test
 
 ```
-Portfolio-hono/
-├── public/
-│   └── images/
-│       └── profile.jpg
-├── src/
-│   ├── index.tsx          # Main application component and routes
-│   └── renderer.tsx       # HTML renderer with inline styles
-├── package.json
-├── tsconfig.json
-├── vite.config.ts
-└── wrangler.toml          # Cloudflare Workers configuration
+cd frontend
+npm run test
 ```
 
-## Deployment
+## Deployment (Render / Docker)
 
-This project is configured to deploy on Cloudflare Workers:
+Render の無料プランで簡単デプロイが可能です。`Dockerfile` と `render.yaml` を用意しています。
 
-```bash
-npm run deploy
-```
+手順（初回）
+- GitHubにプッシュ後、Renderダッシュボードで「New +」→「Blueprints」→ リポジトリを選択
+- `render.yaml` を検出して作成・デプロイ
+- 自動デプロイ: 有効（デフォルト）
 
-Make sure you have:
-1. A Cloudflare account
-2. Wrangler CLI configured with your account (`wrangler login`)
+概要
+- Dockerマルチステージでフロント(Vue)をビルド→ `dist/` をFastAPIコンテナへ同梱
+- ランタイムは `uvicorn backend.app.main:app --port $PORT`
+- ヘルスチェック: `/health`
 
-## Customization
+## Styling
 
-### Profile Information
+- 各 `.vue` ファイルで `<style module>` によりローカルCSSを定義（PostCSS対応）
+- グローバル最小限のベース（CSS変数/フォント等）は `frontend/src/App.vue` の `<style>` で管理
 
-Edit the profile information in `src/index.tsx`:
-- Update the name, title, and profile image
-- Modify education and experience sections
-- Add or remove social media links
+## Notes
 
-### Styling
-
-The design uses Tailwind CSS. Customize the appearance by:
-- Modifying classes in the JSX components
-- Adding custom styles in `src/style.css`
-- Updating the color scheme and typography
-
-### Profile Image
-
-Profile images are served locally from `public/images/` via Workers assets.
-To update:
-1. Replace `public/images/profile.jpg` (or add new files under `public/images/`)
-2. Update the image path in `src/index.tsx` if you change filenames
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This project is open source and available under the [MIT License](LICENSE).
+- 画像などの静的ファイルはリポジトリ直下の `public/` を `frontend` 側の `publicDir` として参照しています。
+- 詳細なロードマップやメモは `docs/開発ノート.md` を参照してください。
