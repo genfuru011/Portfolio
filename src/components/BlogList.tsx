@@ -36,6 +36,30 @@ export const BlogList = () => {
 						))}
 					</div>
 				</main>
+
+				{/* Footer */}
+				<footer class="mt-16 pt-8 border-t border-gray-200">
+					<p class="text-center text-sm text-gray-500">
+						© 2025 Hiroto Furugen. Built with{" "}
+						<a
+							href="https://hono.dev"
+							class="text-gray-600 hover:text-gray-900 underline"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							Hono
+						</a>{" "}
+						&{" "}
+						<a
+							href="https://workers.cloudflare.com"
+							class="text-gray-600 hover:text-gray-900 underline"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							Cloudflare Workers
+						</a>
+					</p>
+				</footer>
 			</div>
 		</div>
 	);

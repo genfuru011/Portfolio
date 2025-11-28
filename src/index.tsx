@@ -18,6 +18,8 @@ app.use(renderer);
 
 // Static assets
 app.get("/favicon.ico", (c) => c.env.ASSETS.fetch(c.req.raw));
+app.get("/favicon-*.png", (c) => c.env.ASSETS.fetch(c.req.raw));
+app.get("/apple-touch-icon.png", (c) => c.env.ASSETS.fetch(c.req.raw));
 app.get("/images/*", (c) => c.env.ASSETS.fetch(c.req.raw));
 app.get("/tailwind.css", (c) => c.env.ASSETS.fetch(c.req.raw));
 
