@@ -21,7 +21,10 @@ export const renderer = jsxRenderer(({ children }) => {
 				{children}
 				<script
 					dangerouslySetInnerHTML={{
-						__html: "document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());",
+						__html: `
+							document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());
+							document.body.addEventListener('htmx:afterSwap', () => hljs.highlightAll());
+						`,
 					}}
 				/>
 			</body>
