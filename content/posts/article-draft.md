@@ -4,6 +4,8 @@ date: 2025-01-12
 description: 次世代Webフレームワーク Hono と Cloudflare Workers を使ったポートフォリオサイト構築の全記録。
 ---
 
+![Hono + Cloudflare Workers](/images/AdobeStock_264415324.jpeg)
+
 # Hono + Cloudflare Workersで作るモダンなポートフォリオサイト
 
 ## はじめに

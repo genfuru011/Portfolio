@@ -2,6 +2,16 @@ export const App = () => {
 	return (
 		<div class="min-h-screen bg-white">
 			<div class="max-w-4xl mx-auto px-6 py-16">
+				{/* Navigation */}
+				<nav class="mb-12">
+					<a
+						href="/"
+						class="text-gray-500 hover:text-gray-900 transition-colors"
+					>
+						&larr; Back to Home
+					</a>
+				</nav>
+
 				<header class="text-center mb-16">
 					<img
 						src="/images/profile.jpg"
@@ -62,12 +72,6 @@ export const App = () => {
 						<p>I build applications and web services for myself.</p>
 					</div>
 
-					<a
-						href="/blog"
-						class="inline-block px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
-					>
-						Read Blog
-					</a>
 				</header>
 
 				<main class="max-w-3xl mx-auto">

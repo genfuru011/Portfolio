@@ -5,11 +5,24 @@ export const BlogPost = ({ post }: { post: Post }) => {
 		<div class="min-h-screen bg-white">
 			<div class="max-w-4xl mx-auto px-6 py-16">
 				<header class="mb-12">
+					<div class="flex items-center justify-between mb-8">
+						<a href="/" class="text-2xl font-medium text-gray-900">
+							Hiroto Furugen
+						</a>
+						<nav class="flex items-center gap-6">
+							<a
+								href="/about"
+								class="text-gray-600 hover:text-gray-900 transition-colors"
+							>
+								About
+							</a>
+						</nav>
+					</div>
 					<a
-						href="/blog"
-						class="text-gray-500 hover:text-gray-900 transition-colors"
+						href="/"
+						class="text-gray-500 hover:text-gray-900 transition-colors text-sm"
 					>
-						&larr; Back to Blog
+						&larr; Back to Home
 					</a>
 					<h1 class="text-4xl font-normal text-gray-900 mt-4">{post.title}</h1>
 					<p class="text-gray-500 mt-2">{post.date}</p>

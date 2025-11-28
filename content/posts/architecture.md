@@ -4,6 +4,8 @@ date: 2025-01-08
 description: Hono + Cloudflare Workers で構築したポートフォリオサイトのアーキテクチャを図解と共に解説します。
 ---
 
+![アーキテクチャ](/images/IMG_3221.jpeg)
+
 # ポートフォリオサイト アーキテクチャ概要
 
 このドキュメントは、HonoとCloudflare Workersを基盤としたポートフォリオサイトのアーキテクチャについて説明します。

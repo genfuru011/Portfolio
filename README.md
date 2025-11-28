@@ -1,29 +1,40 @@
 # Portfolio Website
 
-A clean and modern portfolio website built with [Hono](https://hono.dev/) and Tailwind CSS, designed to showcase professional experience and education in a minimalist style.
+A clean and modern portfolio website built with [Hono](https://hono.dev/) and Tailwind CSS, featuring a card-based blog layout inspired by [devas.life](https://www.devas.life/).
 
-##  Live Demo
+## Live Demo
 
 Deployed URL is issued by Cloudflare Workers when you run `wrangler deploy`.
 Example: `https://portfolio-hono.<your-account>.workers.dev`
 
-##  Features
+## Features
 
--  Clean, minimalist design inspired by modern portfolio layouts
--  Fully responsive design
--  Built with Hono for fast performance
--  Deployed on Cloudflare Workers
--  TypeScript support
--  Tailwind CSS v4 built locally and served via Workers assets
--  Static assets served from `public/` via Wrangler `[assets]`
+- Clean, minimalist design with card-based blog layout
+- Fully responsive design
+- Markdown-based blog system with automatic thumbnail extraction
+- Syntax highlighting for code blocks (highlight.js)
+- Built with Hono for fast performance
+- Deployed on Cloudflare Workers
+- TypeScript support
+- Tailwind CSS v4 built locally and served via Workers assets
+
+## Site Structure
+
+| URL | Page | Description |
+|-----|------|-------------|
+| `/` | Home | Card-based blog post list with thumbnails |
+| `/about` | About | Profile, education, and experience |
+| `/blog` | Blog List | Traditional list view of posts |
+| `/blog/:slug` | Post Detail | Individual blog post with syntax highlighting |
 
 ## Tech Stack
 
 - **Framework**: Hono (Web framework for Cloudflare Workers)
-- **Styling**: Tailwind CSS
+- **Styling**: Tailwind CSS v4
 - **Language**: TypeScript
 - **Deployment**: Cloudflare Workers
-- **Build Tool**: Vite
+- **Syntax Highlighting**: highlight.js (github-dark theme)
+- **Lint/Format**: Biome
 
 ## Getting Started
 
@@ -45,81 +56,116 @@ cd Portfolio-hono
 npm install
 ```
 
-3. Start the development server:
+3. Build posts and CSS:
+```bash
+npm run build:posts
+npm run build:css
+```
+
+4. Start the development server:
 ```bash
 npm run dev
 ```
 
-4. Open your browser and visit `http://localhost:8787` (default for Wrangler dev)
+5. Open your browser and visit `http://localhost:8787`
 
 ## Development
 
 ### Available Scripts
 
 - `npm run dev` - Start development server with Wrangler
-- `npm run build` - Build for production (dry run)
-- `npm run preview` - Preview with Wrangler local mode
+- `npm run build:posts` - Generate posts.ts from Markdown files
+- `npm run build:css` - Build Tailwind CSS
+- `npm run build` - Full build (posts + css + dry-run)
 - `npm run deploy` - Deploy to Cloudflare Workers
-- `npm run cf-typegen` - Generate Cloudflare types
+- `npm run lint` - Run Biome lint
+- `npm run format` - Format code with Biome
 
 ### Project Structure
 
 ```
-Portfolio-hono/
+Portfolio/
+├── content/
+│   └── posts/           # Markdown blog posts
+│       ├── dev-notes.md
+│       └── hello-world.md
 ├── public/
-│   └── images/
-│       └── profile.jpg
+│   ├── images/          # Static images (thumbnails, etc.)
+│   └── tailwind.css     # Built CSS (generated)
+├── scripts/
+│   └── build-posts.ts   # Markdown → TypeScript converter
 ├── src/
-│   ├── index.tsx          # Main application component and routes
-│   └── renderer.tsx       # HTML renderer with inline styles
-├── package.json
-├── tsconfig.json
-├── vite.config.ts
-└── wrangler.toml          # Cloudflare Workers configuration
+│   ├── blog/
+│   │   └── posts.ts     # Auto-generated post data
+│   ├── components/
+│   │   ├── Home.tsx     # Home page (card layout)
+│   │   ├── App.tsx      # About page
+│   │   ├── BlogList.tsx # Blog list page
+│   │   └── BlogPost.tsx # Blog post detail
+│   ├── index.tsx        # Hono app and routes
+│   └── renderer.tsx     # HTML shell (CDN scripts)
+├── biome.json           # Lint/Format config
+├── wrangler.toml        # Cloudflare Workers config
+└── package.json
 ```
+
+## Blog System
+
+### Adding a New Post
+
+1. Create a Markdown file in `content/posts/`:
+
+```markdown
+---
+title: Post Title
+date: 2025-01-01
+description: Brief description of the post
+---
+
+![Thumbnail](/images/example.jpg)
+
+## Post Content
+
+Your content here...
+```
+
+2. The first image in the content is automatically used as the thumbnail
+3. Run `npm run build:posts` to regenerate `posts.ts`
+
+### Syntax Highlighting
+
+Code blocks are automatically highlighted using highlight.js with the github-dark theme. Supported languages include JavaScript, TypeScript, Python, and many more.
 
 ## Deployment
 
-This project is configured to deploy on Cloudflare Workers:
+Deploy to Cloudflare Workers:
 
 ```bash
 npm run deploy
 ```
 
-Make sure you have:
+Requirements:
 1. A Cloudflare account
-2. Wrangler CLI configured with your account (`wrangler login`)
+2. Wrangler CLI configured (`wrangler login`)
 
 ## Customization
 
 ### Profile Information
 
-Edit the profile information in `src/index.tsx`:
-- Update the name, title, and profile image
-- Modify education and experience sections
-- Add or remove social media links
+Edit `src/components/App.tsx` to update:
+- Name and title
+- Education and experience
+- Social media links
 
 ### Styling
 
-The design uses Tailwind CSS. Customize the appearance by:
-- Modifying classes in the JSX components
-- Adding custom styles in `src/style.css`
-- Updating the color scheme and typography
+- Modify Tailwind classes in JSX components
+- Add custom styles in `src/style.css`
+- Run `npm run build:css` after changes
 
-### Profile Image
+### Images
 
-Profile images are served locally from `public/images/` via Workers assets.
-To update:
-1. Replace `public/images/profile.jpg` (or add new files under `public/images/`)
-2. Update the image path in `src/index.tsx` if you change filenames
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+Place images in `public/images/` and reference them with `/images/filename.jpg`.
 
 ## License
 

@@ -10,10 +10,18 @@ interface PostMeta {
 	title: string;
 	date: string;
 	description: string;
+	thumbnail?: string;
 }
 
 interface PostData extends PostMeta {
 	content: string;
+}
+
+// Extract the first image from markdown content
+function extractFirstImage(content: string): string | undefined {
+	const imageRegex = /!\[.*?\]\((.*?)\)/;
+	const match = content.match(imageRegex);
+	return match ? match[1] : undefined;
 }
 
 function buildPosts() {
@@ -31,12 +39,16 @@ function buildPosts() {
 				? data.date.toISOString().split("T")[0]
 				: String(data.date || new Date().toISOString().split("T")[0]);
 
+		const trimmedContent = content.trim();
+		const thumbnail = extractFirstImage(trimmedContent);
+
 		posts.push({
 			slug,
 			title: data.title || slug,
 			date: dateValue,
 			description: data.description || "",
-			content: content.trim(),
+			thumbnail,
+			content: trimmedContent,
 		});
 	}
 
@@ -53,17 +65,19 @@ export interface Post {
 	title: string;
 	date: string;
 	description: string;
+	thumbnail?: string;
 	content: string;
 }
 
 type PostMeta = Omit<Post, "content">;
 
 const postsData: PostMeta[] = ${JSON.stringify(
-		posts.map(({ slug, title, date, description }) => ({
+		posts.map(({ slug, title, date, description, thumbnail }) => ({
 			slug,
 			title,
 			date,
 			description,
+			...(thumbnail && { thumbnail }),
 		})),
 		null,
 		"\t",

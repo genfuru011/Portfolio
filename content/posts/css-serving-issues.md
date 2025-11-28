@@ -4,6 +4,8 @@ date: 2025-01-07
 description: Cloudflare Workers 環境で静的ファイル（CSS）を配信する際に遭遇した問題と、その解決方法を詳しく解説します。
 ---
 
+![CSS配信問題](/images/IMG_3275.jpeg)
+
 # Cloudflare WorkersでのCSS配信問題：詳細解説
 
 ## 問題の概要
