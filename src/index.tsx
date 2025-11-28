@@ -3,7 +3,6 @@ import { renderer } from "./renderer";
 import { getPostBySlug } from "./blog/posts";
 import { Home } from "./components/Home";
 import { App } from "./components/App";
-import { BlogList } from "./components/BlogList";
 import { BlogPost } from "./components/BlogPost";
 
 type CloudflareBindings = {
@@ -26,7 +25,6 @@ app.get("/tailwind.css", (c) => c.env.ASSETS.fetch(c.req.raw));
 // Routes
 app.get("/", (c) => c.render(<Home />));
 app.get("/about", (c) => c.render(<App />));
-app.get("/blog", (c) => c.render(<BlogList />));
 app.get("/blog/:slug", (c) => {
 	const slug = c.req.param("slug");
 	const post = getPostBySlug(slug);
