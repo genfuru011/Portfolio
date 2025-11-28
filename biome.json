@@ -1,11 +1,19 @@
 {
-  "files": {
-    "ignore": [
-      "public/tailwind.css",
-      "dist",
-      "dist-server",
-      ".wrangler",
-      "node_modules"
-    ]
-  }
+	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+	"files": {
+		"ignore": [
+			"public/tailwind.css",
+			"dist",
+			"dist-server",
+			".wrangler",
+			"node_modules"
+		]
+	},
+	"linter": {
+		"rules": {
+			"security": {
+				"noDangerouslySetInnerHtml": "off"
+			}
+		}
+	}
 }

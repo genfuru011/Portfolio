@@ -1,30 +1,35 @@
 {
-  "name": "portfolio-hono",
-  "type": "module",
-  "scripts": {
-    "dev": "wrangler dev",
-    "build:css": "tailwindcss -i ./src/style.css -o ./public/tailwind.css --minify",
-    "build": "npm run build:css && wrangler deploy --dry-run",
-    "preview": "wrangler dev --local",
-    "deploy": "wrangler deploy",
-    "cf-typegen": "wrangler types --env-interface CloudflareBindings",
-    "lint": "biome lint .",
-    "lint:fix": "biome lint --write .",
-    "format": "biome format --write .",
-    "check": "biome check ."
-  },
-  "dependencies": {
-    "basecoat-css": "^0.3.1",
-    "hono": "^4.8.12",
-    "tailwindcss": "^4.1.11"
-  },
-  "devDependencies": {
-    "@cloudflare/vite-plugin": "^1.2.3",
-    "@biomejs/biome": "^1.9.4",
-    "@tailwindcss/cli": "^4.1.14",
-    "@types/node": "^24.2.0",
-    "typescript": "^5.9.2",
-    "vite": "^6.3.5",
-    "wrangler": "^4.17.0"
-  }
+	"name": "portfolio-hono",
+	"type": "module",
+	"scripts": {
+		"dev": "wrangler dev",
+		"build:posts": "npx tsx scripts/build-posts.ts",
+		"build:css": "tailwindcss -i ./src/style.css -o ./public/tailwind.css --minify",
+		"build": "npm run build:posts && npm run build:css && wrangler deploy --dry-run",
+		"preview": "wrangler dev --local",
+		"deploy": "wrangler deploy",
+		"cf-typegen": "wrangler types --env-interface CloudflareBindings",
+		"lint": "biome lint .",
+		"lint:fix": "biome lint --write .",
+		"format": "biome format --write .",
+		"check": "biome check ."
+	},
+	"dependencies": {
+		"basecoat-css": "^0.3.1",
+		"gray-matter": "^4.0.3",
+		"hono": "^4.8.12",
+		"marked": "^17.0.1",
+		"tailwindcss": "^4.1.11"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.4",
+		"@cloudflare/vite-plugin": "^1.2.3",
+		"@tailwindcss/cli": "^4.1.14",
+		"@types/marked": "^5.0.2",
+		"@types/node": "^24.2.0",
+		"tsx": "^4.20.6",
+		"typescript": "^5.9.2",
+		"vite": "^6.3.5",
+		"wrangler": "^4.17.0"
+	}
 }
