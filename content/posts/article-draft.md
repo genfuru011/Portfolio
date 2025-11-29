@@ -35,12 +35,12 @@ description: 次世代Webフレームワーク Hono と Cloudflare Workers を�
 
 ```json
 {
-  "framework": "Hono 4.8.12",
-  "styling": "Tailwind CSS (CDN)",
+  "framework": "Hono",
+  "styling": "Tailwind CSS v4 (ローカルビルド)",
   "language": "TypeScript",
   "buildTool": "Vite",
   "deployment": "Cloudflare Workers",
-  "imageHosting": "GitHub (raw URL)"
+  "staticAssets": "Wrangler [assets]"
 }
 ```
 
@@ -167,23 +167,16 @@ export const renderer = jsxRenderer(({ children }) => {
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Hiroto Furugen - Portfolio</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <style>{`
-          body {
-            background: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
-            min-height: 100vh;
-            color: #1f2937;
-            line-height: 1.6;
-          }
-          /* カスタムスタイル */
-        `}</style>
+        {/* ローカルビルドしたTailwind CSSを読み込み */}
+        <link rel="stylesheet" href="/tailwind.css" />
       </head>
       <body class="min-h-screen py-8">{children}</body>
     </html>
   );
 });
 ```
+
+Tailwind CSS v4 は `@tailwindcss/cli` でローカルビルドし、`public/tailwind.css` として配信しています。CDN依存を排除することで、再現性とパフォーマンスを両立しています。
 
 ## 躓いたポイントと解決策
 
@@ -199,44 +192,39 @@ import { ViteClient } from "vite-ssr-components/hono";
 ```
 
 **解決策**:
-```tsx
-// CDNとインラインスタイルで解決
-<script src="https://cdn.tailwindcss.com"></script>
-<style>{`/* カスタムCSS */`}</style>
-```
-
-### R2統合の課題
-
-当初、プロフィール画像をCloudflare R2に保存する予定でしたが、バインディング設定で躓きました。
-
-**試行したR2設定**:
 ```toml
-[[r2_buckets]]
-binding = "PORTFOLIO_ASSETS"
-bucket_name = "portfolio-assets"
+# wrangler.toml で静的アセットを設定
+[assets]
+directory = "./public"
+binding = "ASSETS"
 ```
 
-```typescript
-type Bindings = {
-  PORTFOLIO_ASSETS: R2Bucket;
-};
-
-app.get("/images/*", async (c) => {
-  const object = await c.env.PORTFOLIO_ASSETS.get(key);
-  // エラー: R2 bucket not configured
-});
+```tsx
+// ローカルビルドしたCSSを読み込み
+<link rel="stylesheet" href="/tailwind.css" />
 ```
+
+### 画像配信
+
+当初、プロフィール画像をCloudflare R2に保存する予定でしたが、Wrangler `[assets]` を使えばもっとシンプルに実現できました。
 
 **最終解決策**:
-GitHubのraw URLを使用することで、シンプルかつ安定した画像配信を実現：
+`public/images/` に画像を配置し、Wrangler `[assets]` で配信：
+
+```typescript
+// index.tsx
+app.get('/images/*', (c) => c.env.ASSETS.fetch(c.req.raw))
+```
 
 ```tsx
 <img
-  src="https://raw.githubusercontent.com/genfuru011/Portfolio-hono/main/public/images/profile.jpg"
+  src="/images/profile.jpg"
   alt="Profile"
   class="w-40 h-40 rounded-full mx-auto mb-8 object-cover shadow-lg"
 />
 ```
+
+外部サービスに依存せず、シンプルな構成で画像配信を実現しています。
 
 ## デプロイメント
 
@@ -271,12 +259,19 @@ Deployed: https://portfolio-hono.hiro-genfuru0119.workers.dev
 
 ```
 Portfolio-hono/
+├── content/
+│   └── posts/             # Markdown記事
 ├── public/
-│   └── images/
-│       └── profile.jpg
+│   ├── images/            # 画像アセット
+│   └── tailwind.css       # ビルド済みCSS
 ├── src/
+│   ├── components/        # JSXコンポーネント
+│   ├── blog/              # ブログ機能
 │   ├── index.tsx          # メインアプリケーション
-│   └── renderer.tsx       # HTMLレンダラー
+│   ├── renderer.tsx       # HTMLレンダラー
+│   └── style.css          # Tailwind入力CSS
+├── scripts/
+│   └── build-posts.ts     # Markdown変換スクリプト
 ├── package.json
 ├── tsconfig.json
 ├── vite.config.ts

@@ -27,7 +27,6 @@ description: ポートフォリオサイト開発時のメモ。技術選定、�
 |-----|--------|---------------|
 | `/` | Home | `Home.tsx` - devas.life 風カード型ブログ一覧 |
 | `/about` | About Me | `App.tsx` - プロフィール・経歴 |
-| `/blog` | Blog一覧 | `BlogList.tsx` - 従来のリスト表示 |
 | `/blog/:slug` | 記事詳細 | `BlogPost.tsx` - Markdown レンダリング |
 
 ## 主要ファイル
@@ -39,7 +38,6 @@ description: ポートフォリオサイト開発時のメモ。技術選定、�
 ### コンポーネント
 - `src/components/Home.tsx`: トップページ（カード型ブログプレビュー）
 - `src/components/App.tsx`: About ページ
-- `src/components/BlogList.tsx`: ブログ一覧
 - `src/components/BlogPost.tsx`: 記事詳細
 
 ### ブログシステム
@@ -110,7 +108,7 @@ description: 記事の概要
 
 ## 今後の改善候補
 
-- [ ] `/blog` を削除して Home に完全統合
+- [x] `/blog` を削除して Home に完全統合
 - [ ] ダークモード対応
 - [ ] RSS/Atom フィード生成
 - [ ] OGP 画像の動的生成
@@ -128,3 +126,4 @@ description: 記事の概要
 - 2025-11-29: サムネイル画像の自動抽出機能を追加（本文から最初の画像を取得）。
 - 2025-11-29: 各記事に画像を追加。
 - 2025-11-29: highlight.js によるシンタックスハイライトを追加（github-dark テーマ）。
+- 2025-11-29: `/blog` ルートと `BlogList.tsx` を削除（Home のカード型一覧に統合）。

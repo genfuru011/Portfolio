@@ -139,9 +139,21 @@ app.get("/styles/*", async (c) => {
 - R2バインディングの設定エラー
 - CSS配信のためにオブジェクトストレージを使うのは過度
 
-### 3. CDN + インライン化（採用した解決策）
+### 3. Wrangler `[assets]` + ローカルビルド（採用した解決策）
 
-最終的に採用した解決策：
+最終的に採用した解決策は、Tailwind CSS v4 をローカルでビルドし、Wrangler の `[assets]` 機能で配信する方法です：
+
+```toml
+# wrangler.toml
+[assets]
+directory = "./public"
+binding = "ASSETS"
+```
+
+```bash
+# Tailwind CSS をローカルビルド
+tailwindcss -i ./src/style.css -o ./public/tailwind.css --minify
+```
 
 ```tsx
 // renderer.tsx
@@ -152,32 +164,8 @@ export const renderer = jsxRenderer(({ children }) => {
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Hiroto Furugen - Portfolio</title>
-        {/* CDNからTailwind CSSを読み込み */}
-        <script src="https://cdn.tailwindcss.com"></script>
-        {/* カスタムCSSをインライン化 */}
-        <style>{`
-          body {
-            background: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
-            min-height: 100vh;
-            color: #1f2937;
-            line-height: 1.6;
-          }
-
-          * {
-            transition: all 0.2s ease;
-          }
-
-          h1 {
-            font-weight: 300;
-            letter-spacing: -0.02em;
-            line-height: 1.2;
-          }
-
-          a:hover svg {
-            transform: translateY(-1px);
-          }
-        `}</style>
+        {/* ローカルビルドしたTailwind CSSを読み込み */}
+        <link rel="stylesheet" href="/tailwind.css" />
       </head>
       <body class="min-h-screen py-8">{children}</body>
     </html>
@@ -185,23 +173,29 @@ export const renderer = jsxRenderer(({ children }) => {
 });
 ```
 
+```typescript
+// index.tsx - 静的アセットのルーティング
+app.get('/tailwind.css', (c) => c.env.ASSETS.fetch(c.req.raw))
+app.get('/images/*', (c) => c.env.ASSETS.fetch(c.req.raw))
+```
+
 ## なぜこの解決策が最適なのか？
 
 ### 1. **確実性**
-- 外部リクエストに依存しない
-- HTMLに直接埋め込まれるため、必ず配信される
+- 外部CDNに依存しない
+- ビルド時にCSSが生成されるため、必ず配信される
 
 ### 2. **パフォーマンス**
-- 追加のHTTPリクエストが不要
-- CDNからのTailwind CSS読み込みは高速
+- 未使用CSSが削除される（Tree-shaking）
+- Cloudflareエッジから高速配信
 
 ### 3. **シンプルさ**
-- 複雑な設定が不要
-- Cloudflare Workers特有の制約を回避
+- Wrangler標準機能で実現
+- 追加のサービス（R2等）不要
 
 ### 4. **保守性**
-- CSSとコンポーネントが同じファイルに存在
-- 依存関係の管理が簡単
+- ビルドプロセスが明確
+- オフライン環境でも開発可能
 
 ## パフォーマンスへの影響
 
@@ -212,23 +206,23 @@ export const renderer = jsxRenderer(({ children }) => {
 - リクエスト数: 1
 ```
 
-### After（インライン化）
+### After（ローカルビルド + ASSETS配信）
 ```
 - 初回表示: 200ms以下（スタイル適用済み）
-- ファイルサイズ: 116KB（+6KB）
-- リクエスト数: 1 + CDN（並列）
+- CSSファイル: 最適化済み（未使用CSS削除）
+- リクエスト数: 2（HTML + CSS、並列取得）
 ```
 
-わずか6KBの増加で、確実なスタイル配信を実現しました。
+CDN依存を排除しつつ、高速なスタイル配信を実現しました。
 
 ## 他の解決策との比較
 
 | 方法 | 設定複雑度 | パフォーマンス | 確実性 | 保守性 |
 |------|------------|----------------|--------|--------|
-| 静的ファイル配信 | 高 | 良い | 中 | 中 |
 | R2 Object Storage | 高 | 良い | 中 | 低 |
-| **インライン化** | **低** | **優秀** | **高** | **高** |
-| 外部CSS | 低 | 中 | 低 | 中 |
+| CDN + インライン化 | 低 | 良い | 中 | 中 |
+| 外部CSS（CDN） | 低 | 中 | 低 | 中 |
+| **Wrangler [assets]** | **低** | **優秀** | **高** | **高** |
 
 ## 学んだこと
 
